@@ -1,5 +1,5 @@
 package kr.co.zerobase.stock.controller;
 
-public class authController {
+public class AuthController {
 
 }

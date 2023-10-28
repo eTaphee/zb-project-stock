@@ -1,5 +1,7 @@
 package kr.co.zerobase.stock.controller;
 
+import kr.co.zerobase.stock.service.FinanceService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -8,11 +10,15 @@ import org.springframework.web.bind.annotation.RestController;
 
 
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/finance")
-public class financeController {
+public class FinanceController {
+
+    private final FinanceService financeService;
 
     @GetMapping("/dividend/{companyName}")
     public ResponseEntity<?> searchFinance(@PathVariable String companyName) {
-        return null;
+
+        return ResponseEntity.ok(financeService.getDividendByCompanyName(companyName));
     }
 }
