@@ -10,8 +10,10 @@ import kr.co.zerobase.stock.persist.repository.CompanyRepository;
 import kr.co.zerobase.stock.persist.repository.DividendRepository;
 import kr.co.zerobase.stock.scraper.Scraper;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.collections4.Trie;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -20,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CompanyService {
 
+    private final Trie<String, String> trie;
     private final Scraper scraper;
     private final CompanyRepository companyRepository;
     private final DividendRepository dividendRepository;
@@ -55,5 +58,28 @@ public class CompanyService {
             .collect(Collectors.toList()));
 
         return company;
+    }
+
+    public List<String> getCompanyNamesByKeyword(String keyword) {
+        return companyRepository.findByNameStartingWithIgnoreCase(keyword,
+                PageRequest.of(0, 10))
+            .stream()
+            .map(CompanyEntity::getName)
+            .collect(Collectors.toList());
+    }
+
+    public void addAutocompleteKeyword(String keyword) {
+        trie.put(keyword, null);
+    }
+
+    public List<String> autocomplete(String keyword) {
+        return trie.prefixMap(keyword).keySet()
+            .stream()
+            .limit(10)
+            .collect(Collectors.toList());
+    }
+
+    public void deleteAutocompleteKeyword(String keyword) {
+        trie.remove(keyword);
     }
 }

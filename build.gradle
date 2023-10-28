@@ -23,6 +23,7 @@ dependencies {
 
     implementation 'com.h2database:h2'
     implementation 'org.jsoup:jsoup:1.16.1'
+    implementation 'org.apache.commons:commons-collections4:4.4'
 
     compileOnly 'org.projectlombok:lombok:1.18.28'
     annotationProcessor 'org.projectlombok:lombok:1.18.28'
