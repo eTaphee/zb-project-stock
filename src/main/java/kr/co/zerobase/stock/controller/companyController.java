@@ -5,6 +5,8 @@ import javax.validation.constraints.NotEmpty;
 import kr.co.zerobase.stock.model.Company;
 import kr.co.zerobase.stock.service.CompanyService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -29,8 +31,8 @@ public class companyController {
     }
 
     @GetMapping
-    public ResponseEntity<?> searchCompany() {
-        return null;
+    public ResponseEntity<Page<Company>> searchCompany(final Pageable pageable) {
+        return ResponseEntity.ok(companyService.getAllCompany(pageable));
     }
 
     @PostMapping

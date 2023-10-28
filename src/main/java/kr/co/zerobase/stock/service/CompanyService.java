@@ -1,7 +1,7 @@
 package kr.co.zerobase.stock.service;
 
+import java.util.List;
 import java.util.stream.Collectors;
-import javax.transaction.Transactional;
 import kr.co.zerobase.stock.model.Company;
 import kr.co.zerobase.stock.model.ScrapedResult;
 import kr.co.zerobase.stock.persist.entity.CompanyEntity;
@@ -10,7 +10,11 @@ import kr.co.zerobase.stock.persist.repository.CompanyRepository;
 import kr.co.zerobase.stock.persist.repository.DividendRepository;
 import kr.co.zerobase.stock.scraper.Scraper;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
@@ -26,6 +30,14 @@ public class CompanyService {
             throw new RuntimeException("already exists ticker: " + ticker);
         }
         return storeCompanyAndDividend(ticker);
+    }
+
+    @Transactional(readOnly = true)
+    public Page<Company> getAllCompany(Pageable pageable) {
+        return new PageImpl<>(this.companyRepository.findAll(pageable)
+            .stream()
+            .map(Company::fromEntity)
+            .collect(Collectors.toList()));
     }
 
     private Company storeCompanyAndDividend(String ticker) {

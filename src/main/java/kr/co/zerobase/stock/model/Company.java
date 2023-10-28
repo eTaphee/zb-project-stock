@@ -2,6 +2,7 @@ package kr.co.zerobase.stock.model;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import kr.co.zerobase.stock.persist.entity.CompanyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -17,4 +18,11 @@ public class Company {
 
     private String ticker;
     private String name;
+
+    public static Company fromEntity(CompanyEntity company) {
+        return Company.builder()
+            .ticker(company.getTicker())
+            .name(company.getName())
+            .build();
+    }
 }
