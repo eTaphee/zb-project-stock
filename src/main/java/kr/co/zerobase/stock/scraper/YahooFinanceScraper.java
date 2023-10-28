@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import kr.co.zerobase.stock.model.Company;
 import kr.co.zerobase.stock.model.Dividend;
 import kr.co.zerobase.stock.model.ScrapedResult;
@@ -13,7 +14,9 @@ import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
+import org.springframework.stereotype.Component;
 
+@Component
 public class YahooFinanceScraper implements Scraper {
 
     private static final String DIVIDEND_URL = "https://finance.yahoo.com/quote/%s/history?period1=%d&period2=%d&interval=1mo";
@@ -24,26 +27,28 @@ public class YahooFinanceScraper implements Scraper {
     public ScrapedResult scrap(Company company) {
         return ScrapedResult.builder()
             .company(company)
-            .dividendEntities(
+            .dividends(
                 parseDividends(getTBodyElement(company)))
             .build();
     }
 
     @Override
-    public Company scrapCompanyByTicker(String ticker) {
+    public Optional<Company> scrapCompanyByTicker(String ticker) {
         Connection connection = Jsoup.connect(String.format(SUMMARY_URL, ticker));
 
         try {
             Document document = connection.get();
             Element h1Element = document.getElementsByTag("h1").get(0);
             String name = h1Element.text().split("[(]")[0].trim();
-            return Company.builder()
-                .name(name)
-                .ticker(ticker)
-                .build();
-        } catch (IOException e) {
-            throw new RuntimeException(e);
+            return Optional.ofNullable(
+                Company.builder()
+                    .name(name)
+                    .ticker(ticker)
+                    .build());
+        } catch (Exception e) {
+            e.printStackTrace();
         }
+        return Optional.empty();
     }
 
     private static Element getTBodyElement(Company company) {

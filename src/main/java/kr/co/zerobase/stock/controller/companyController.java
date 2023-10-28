@@ -1,17 +1,27 @@
 package kr.co.zerobase.stock.controller;
 
+import javax.validation.Valid;
+import javax.validation.constraints.NotEmpty;
+import kr.co.zerobase.stock.model.Company;
+import kr.co.zerobase.stock.service.CompanyService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/company")
+@RequiredArgsConstructor
+@RequestMapping(value = "/company")
 public class companyController {
+
+    private final CompanyService companyService;
 
     @GetMapping("/autocomplete")
     public ResponseEntity<?> autocomplete(@RequestParam String keyword) {
@@ -24,8 +34,12 @@ public class companyController {
     }
 
     @PostMapping
-    public ResponseEntity<?> addCompany() {
-        return null;
+    public ResponseEntity<Company> addCompany(@RequestBody @Valid @NotEmpty Company company) {
+        String ticker = company.getTicker();
+        if (ObjectUtils.isEmpty(ticker)) {
+            throw new RuntimeException("ticker is empty");
+        }
+        return ResponseEntity.ok(companyService.save(ticker));
     }
 
     @DeleteMapping

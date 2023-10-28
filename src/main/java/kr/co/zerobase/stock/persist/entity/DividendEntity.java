@@ -7,6 +7,7 @@ import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import kr.co.zerobase.stock.model.Dividend;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -31,4 +32,11 @@ public class DividendEntity {
 
     private String dividend;
 
+    public static DividendEntity of(Long companyId, Dividend dividend) {
+        return DividendEntity.builder()
+            .companyId(companyId)
+            .date(dividend.getDate())
+            .dividend(dividend.getDividend())
+            .build();
+    }
 }
