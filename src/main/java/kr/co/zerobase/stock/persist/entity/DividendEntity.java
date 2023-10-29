@@ -7,6 +7,8 @@ import java.time.LocalDateTime;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.UniqueConstraint;
 import kr.co.zerobase.stock.model.Dividend;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -15,6 +17,7 @@ import lombok.NoArgsConstructor;
 import lombok.ToString;
 
 @Entity(name = "DIVIDEND")
+@Table(uniqueConstraints = {@UniqueConstraint(columnNames = {"companyId", "date"})})
 @Getter
 @Builder
 @NoArgsConstructor(access = PROTECTED)
