@@ -8,6 +8,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.util.ObjectUtils;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -32,11 +33,13 @@ public class CompanyController {
     }
 
     @GetMapping
+    @PreAuthorize("hasRole('ROLE_READ')")
     public ResponseEntity<Page<Company>> searchCompany(final Pageable pageable) {
         return ResponseEntity.ok(companyService.getAllCompany(pageable));
     }
 
     @PostMapping
+    @PreAuthorize("hasRole('WRITE')")
     public ResponseEntity<Company> addCompany(@RequestBody @Valid @NotEmpty Company request) {
         String ticker = request.getTicker();
         if (ObjectUtils.isEmpty(ticker)) {
