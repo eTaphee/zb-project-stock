@@ -33,7 +33,7 @@ public class CompanyController {
     }
 
     @GetMapping
-    @PreAuthorize("hasRole('ROLE_READ')")
+    @PreAuthorize("hasRole('READ')")
     public ResponseEntity<Page<Company>> searchCompany(final Pageable pageable) {
         return ResponseEntity.ok(companyService.getAllCompany(pageable));
     }

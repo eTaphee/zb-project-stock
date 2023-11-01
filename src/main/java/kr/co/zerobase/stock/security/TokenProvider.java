@@ -47,7 +47,7 @@ public class TokenProvider {
         }
 
         var claims = this.parseClaims(token);
-        return claims.getExpiration().before(new Date());
+        return !claims.getExpiration().before(new Date());
     }
 
     public Authentication getAuthentication(String jwt) {
