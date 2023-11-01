@@ -5,6 +5,7 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import kr.co.zerobase.stock.exception.ScrapException;
 import kr.co.zerobase.stock.model.Company;
 import kr.co.zerobase.stock.model.Dividend;
 import kr.co.zerobase.stock.model.ScrapedResult;
@@ -63,7 +64,7 @@ public class YahooFinanceScraper implements Scraper {
                 .getElementsByAttributeValue("data-test", "historical-prices");
 
             if (table.isEmpty()) {
-                throw new RuntimeException("not found historical-prices");
+                throw new ScrapException("not found historical-prices");
             }
 
             return table
@@ -103,7 +104,7 @@ public class YahooFinanceScraper implements Scraper {
                 .dividend(dividend)
                 .build();
         } catch (IllegalArgumentException e) {
-            throw new RuntimeException("Unexpected Month enum value: " + splits[0]);
+            throw new ScrapException("Unexpected Month enum value: " + splits[0]);
         }
     }
 }

@@ -1,7 +1,11 @@
 package kr.co.zerobase.stock.service;
 
+import static kr.co.zerobase.stock.exception.ErrorCode.COMPANY_ALREADY_EXISTS;
+import static kr.co.zerobase.stock.exception.ErrorCode.COMPANY_NOT_FOUND;
+
 import java.util.List;
 import java.util.stream.Collectors;
+import kr.co.zerobase.stock.exception.StockException;
 import kr.co.zerobase.stock.model.Company;
 import kr.co.zerobase.stock.model.ScrapedResult;
 import kr.co.zerobase.stock.persist.entity.CompanyEntity;
@@ -30,7 +34,7 @@ public class CompanyService {
     @Transactional
     public Company save(String ticker) {
         if (companyRepository.existsByTicker(ticker)) {
-            throw new RuntimeException("already exists ticker: " + ticker);
+            throw new StockException(COMPANY_ALREADY_EXISTS);
         }
         return storeCompanyAndDividend(ticker);
     }
@@ -86,7 +90,7 @@ public class CompanyService {
     @Transactional
     public String deleteCompany(String ticker) {
         CompanyEntity companyEntity = companyRepository.findByTicker(ticker)
-            .orElseThrow(() -> new RuntimeException("회사명이 존재하지 않는 회사입니다."));
+            .orElseThrow(() -> new StockException(COMPANY_NOT_FOUND));
 
         dividendRepository.deleteAllByCompanyId(companyEntity.getId());
         companyRepository.delete(companyEntity);

@@ -1,7 +1,11 @@
 package kr.co.zerobase.stock.service;
 
+import static kr.co.zerobase.stock.exception.ErrorCode.PASSWORD_UN_MATCHED;
+import static kr.co.zerobase.stock.exception.ErrorCode.USERNAME_ALREADY_EXISTS;
+import static kr.co.zerobase.stock.exception.ErrorCode.USERNAME_NOT_FOUND;
+
+import kr.co.zerobase.stock.exception.StockException;
 import kr.co.zerobase.stock.model.Auth;
-import kr.co.zerobase.stock.model.Member;
 import kr.co.zerobase.stock.persist.entity.MemberEntity;
 import kr.co.zerobase.stock.persist.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -24,13 +28,13 @@ public class MemberService implements UserDetailsService {
     @Override
     public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
         return memberRepository.findByUsername(username)
-            .orElseThrow(() -> new UsernameNotFoundException("could not find user -> " + username));
+            .orElseThrow(() -> new StockException(USERNAME_NOT_FOUND));
     }
 
     @Transactional
     public MemberEntity register(Auth.SignUp member) {
         if (memberRepository.existsByUsername(member.getUsername())) {
-            throw new RuntimeException("이미 사용 중인 아이디 입니다");
+            throw new StockException(USERNAME_ALREADY_EXISTS);
         }
 
         member.setPassword(passwordEncoder.encode(member.getPassword()));
@@ -41,10 +45,10 @@ public class MemberService implements UserDetailsService {
     public MemberEntity authenticate(Auth.SignIn member) {
 
         MemberEntity user = memberRepository.findByUsername(member.getUsername())
-            .orElseThrow(() -> new RuntimeException("존재 하지 않은 ID 입니다"));
+            .orElseThrow(() -> new StockException(USERNAME_NOT_FOUND));
 
         if (!passwordEncoder.matches(member.getPassword(), user.getPassword())) {
-            throw new RuntimeException("비밀번호가 일치하지 않습니다");
+            throw new StockException(PASSWORD_UN_MATCHED);
         }
 
         return user;

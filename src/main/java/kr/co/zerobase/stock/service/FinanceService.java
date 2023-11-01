@@ -1,9 +1,11 @@
 package kr.co.zerobase.stock.service;
 
+import static kr.co.zerobase.stock.exception.ErrorCode.COMPANY_NOT_FOUND;
 import static kr.co.zerobase.stock.model.constants.CacheKey.KEY_FINANCE;
 
 import java.util.List;
 import java.util.stream.Collectors;
+import kr.co.zerobase.stock.exception.StockException;
 import kr.co.zerobase.stock.model.Company;
 import kr.co.zerobase.stock.model.Dividend;
 import kr.co.zerobase.stock.model.ScrapedResult;
@@ -31,7 +33,7 @@ public class FinanceService {
         log.info("search company -> {}", companyName);
 
         CompanyEntity company = companyRepository.findByName(companyName)
-            .orElseThrow(() -> new RuntimeException("not found company name"));
+            .orElseThrow(() -> new StockException(COMPANY_NOT_FOUND));
 
         List<DividendEntity> dividends = dividendRepository.findAllByCompanyId(company.getId());
 
