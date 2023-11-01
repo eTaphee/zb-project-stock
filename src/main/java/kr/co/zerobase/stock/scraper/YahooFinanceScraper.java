@@ -72,7 +72,7 @@ public class YahooFinanceScraper implements Scraper {
                 .children()
                 .get(1);
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            throw new ScrapException(e);
         }
     }
 

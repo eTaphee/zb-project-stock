@@ -26,7 +26,6 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class CompanyService {
 
-    private final Trie<String, String> trie;
     private final Scraper scraper;
     private final CompanyRepository companyRepository;
     private final DividendRepository dividendRepository;
@@ -72,21 +71,6 @@ public class CompanyService {
             .collect(Collectors.toList());
     }
 
-    public void addAutocompleteKeyword(String keyword) {
-        trie.put(keyword, null);
-    }
-
-    public List<String> autocomplete(String keyword) {
-        return trie.prefixMap(keyword).keySet()
-            .stream()
-            .limit(10)
-            .collect(Collectors.toList());
-    }
-
-    public void deleteAutocompleteKeyword(String keyword) {
-        trie.remove(keyword);
-    }
-
     @Transactional
     public String deleteCompany(String ticker) {
         CompanyEntity companyEntity = companyRepository.findByTicker(ticker)
@@ -94,8 +78,6 @@ public class CompanyService {
 
         dividendRepository.deleteAllByCompanyId(companyEntity.getId());
         companyRepository.delete(companyEntity);
-
-        deleteAutocompleteKeyword(companyEntity.getName());
 
         return companyEntity.getName();
     }

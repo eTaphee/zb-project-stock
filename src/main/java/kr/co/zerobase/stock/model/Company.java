@@ -2,6 +2,7 @@ package kr.co.zerobase.stock.model;
 
 import static lombok.AccessLevel.PROTECTED;
 
+import javax.validation.constraints.NotEmpty;
 import kr.co.zerobase.stock.persist.entity.CompanyEntity;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -16,6 +17,7 @@ import lombok.ToString;
 @AllArgsConstructor(access = PROTECTED)
 public class Company {
 
+    @NotEmpty(message = "ticker는 빈값일 수 없습니다")
     private String ticker;
     private String name;
 
