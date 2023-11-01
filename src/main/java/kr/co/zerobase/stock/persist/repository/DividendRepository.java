@@ -12,4 +12,6 @@ public interface DividendRepository extends JpaRepository<DividendEntity, Long> 
     List<DividendEntity> findAllByCompanyId(Long companyId);
 
     boolean existsByCompanyIdAndDate(Long companyId, LocalDateTime date);
+
+    void deleteAllByCompanyId(Long companyId);
 }
