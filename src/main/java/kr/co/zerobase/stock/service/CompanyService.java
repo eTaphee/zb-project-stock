@@ -14,7 +14,6 @@ import kr.co.zerobase.stock.persist.repository.CompanyRepository;
 import kr.co.zerobase.stock.persist.repository.DividendRepository;
 import kr.co.zerobase.stock.scraper.Scraper;
 import lombok.RequiredArgsConstructor;
-import org.apache.commons.collections4.Trie;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
@@ -48,7 +47,7 @@ public class CompanyService {
 
     private Company storeCompanyAndDividend(String ticker) {
         Company company = scraper.scrapCompanyByTicker(ticker)
-            .orElseThrow(() -> new RuntimeException("failed to scrap ticker: " + ticker));
+            .orElseThrow(() -> new StockException(COMPANY_NOT_FOUND));
 
         ScrapedResult scrapedResult = scraper.scrap(company);
 
